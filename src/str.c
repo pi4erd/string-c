@@ -18,10 +18,10 @@ String *from_c_str(const char *string)
     size_t str_size = strlen(string);
 
     String* result = (String*)malloc(sizeof(String));
-    result->allocated_size = NEW_ALLOCATION_SIZE;
-    if(str_size + 1 > NEW_ALLOCATION_SIZE) {
+    result->allocated_size = FIRST_ALLOCATION_SIZE;
+    if(str_size + 1 > FIRST_ALLOCATION_SIZE) {
         size_t a = (str_size + 1) / NEW_ALLOCATION_SIZE + 1;
-        result->allocated_size += a;
+        result->allocated_size += a * NEW_ALLOCATION_SIZE;
     }
     result->internal_pointer = (char*)malloc(result->allocated_size);
     memcpy_s(result->internal_pointer, result->allocated_size, 
