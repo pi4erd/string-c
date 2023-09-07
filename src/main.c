@@ -3,19 +3,22 @@
 #include "str.h"
 
 int main(int argc, char* argv[]) {
-    String* str = str_new();
-    String* other = str_new();
+    String* str = from_c_str("Hello, ");
+    String* other = from_c_str("World!");
 
-    s_append_string(str, "thisisthelimitofthisprogram");
-    s_append_string(other, ", well, kinda anyway, i hope a "
-        "new allocation method works\n");
-
-    for(int i = 0; i < 1000; i++)
+    for(int i = 0; i < 10; i++)
         append_string(str, other);
 
     free_str(other);
 
+    for(int i = 0; i < 1000000; i++)
+        append_char(str, 'c');
+    
+    append_char(str, '\n');
+
     print_string(str);
+
+    free_str(str);
 
     return 0;
 }

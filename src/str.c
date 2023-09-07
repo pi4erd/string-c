@@ -13,6 +13,24 @@ String *str_new()
     return result;
 }
 
+String *from_c_str(const char *string)
+{
+    size_t str_size = strlen(string);
+
+    String* result = (String*)malloc(sizeof(String));
+    result->allocated_size = NEW_ALLOCATION_SIZE;
+    if(str_size + 1 > NEW_ALLOCATION_SIZE) {
+        size_t a = (str_size + 1) / NEW_ALLOCATION_SIZE + 1;
+        result->allocated_size += a;
+    }
+    result->internal_pointer = (char*)malloc(result->allocated_size);
+    memcpy_s(result->internal_pointer, result->allocated_size, 
+        string, str_size + 1);
+    result->size = str_size;
+
+    return result;
+}
+
 void free_str(String *str)
 {
     free(str->internal_pointer);
@@ -29,13 +47,14 @@ void append_char(String *str, char c)
     str->internal_pointer[str->size] = 0;
 }
 
-void s_append_string(String *str, char *other)
+void s_append_string(String *str, const char *other)
 {
     size_t other_size = strlen(other) + 1;
     String tmp;
 
     tmp.allocated_size = other_size;
-    tmp.internal_pointer = other;
+    tmp.internal_pointer = (char*)malloc(other_size);
+    memcpy_s(tmp.internal_pointer, other_size, other, other_size);
     tmp.size = other_size - 1;
 
     append_string(str, &tmp);
@@ -48,7 +67,7 @@ void append_string(String *str, String *other)
         reallocate_string(str, str->allocated_size + a * NEW_ALLOCATION_SIZE);
     }
     char* from = str->internal_pointer + str->size;
-    memcpy(from, other->internal_pointer, other->size);
+    memcpy_s(from, str->allocated_size, other->internal_pointer, other->size);
 
     str->size += other->size;
     str->internal_pointer[str->size] = 0;
@@ -64,9 +83,9 @@ void reallocate_string(String *str, size_t new_size)
     if(new_size < str->allocated_size)
         new_size = str->allocated_size;
     
-    char* new = malloc(new_size);
+    char* new = (char*)malloc(new_size);
 
-    memcpy(new, str->internal_pointer, str->size);
+    memcpy_s(new, new_size, str->internal_pointer, str->size);
 
     free(str->internal_pointer);
 
