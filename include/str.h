@@ -15,7 +15,7 @@ String* str_new();
 void free_str(String* str);
 
 void append_char(String* str, char c);
-void s_append_string(String* str, const char* other);
+void s_append_string(String* str, char* other);
 void append_string(String* str, String* other);
 void recalculate_size(String* str);
 void reallocate_string(String* str, size_t new_size);

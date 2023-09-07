@@ -29,24 +29,22 @@ void append_char(String *str, char c)
     str->internal_pointer[str->size] = 0;
 }
 
-void s_append_string(String *str, const char *other)
+void s_append_string(String *str, char *other)
 {
-    size_t other_len = strlen(other);
-    if(str->size + other_len > str->allocated_size) {
-        size_t a = other_len / NEW_ALLOCATION_SIZE + 1; // why +1? cuz why not
-        reallocate_string(str, str->allocated_size + a * NEW_ALLOCATION_SIZE);
-    }
-    char* from = str->internal_pointer + str->size;
-    memcpy(from, other, other_len);
+    size_t other_size = strlen(other) + 1;
+    String tmp;
 
-    str->size += other_len;
-    str->internal_pointer[str->size] = 0;
+    tmp.allocated_size = other_size;
+    tmp.internal_pointer = other;
+    tmp.size = other_size - 1;
+
+    append_string(str, &tmp);
 }
 
 void append_string(String *str, String *other)
 {
-    if(str->size + other->size > str->allocated_size) {
-        size_t a = other->size / NEW_ALLOCATION_SIZE + 1; // why +1? cuz why not
+    if(str->size + other->size >= str->allocated_size) {
+        size_t a = other->size / NEW_ALLOCATION_SIZE + 1;
         reallocate_string(str, str->allocated_size + a * NEW_ALLOCATION_SIZE);
     }
     char* from = str->internal_pointer + str->size;

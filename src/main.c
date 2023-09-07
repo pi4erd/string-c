@@ -10,7 +10,8 @@ int main(int argc, char* argv[]) {
     s_append_string(other, ", well, kinda anyway, i hope a "
         "new allocation method works\n");
 
-    append_string(str, other);
+    for(int i = 0; i < 1000; i++)
+        append_string(str, other);
 
     free_str(other);
 
