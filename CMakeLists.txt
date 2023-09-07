@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.20)
+
+project(string-c)
+
+set(LIB_C_SOURCE_FILES src/str.c)
+
+set(C_SOURCE_FILES src/main.c)
+
+add_library(str_c ${LIB_C_SOURCE_FILES})
+
+add_executable(${PROJECT_NAME} ${C_SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} str_c)
