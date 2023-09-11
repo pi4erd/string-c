@@ -1,8 +1,10 @@
-#include "str.h"
+#include <str.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+
+#define TODO() (fprintf(stderr, "Not yet implemented"), exit(1))
 
 String *str_new()
 {
@@ -25,8 +27,7 @@ String *from_c_str(const char *string)
         result->allocated_size += a * NEW_ALLOCATION_SIZE;
     }
     result->internal_pointer = (char*)malloc(result->allocated_size);
-    memcpy_s(result->internal_pointer, result->allocated_size, 
-        string, str_size + 1);
+    memcpy(result->internal_pointer, string, str_size + 1);
     result->size = str_size;
 
     return result;
@@ -49,8 +50,7 @@ String *copy_str(String *from)
 
 void copy_into(String *to, String *from)
 {
-    free_str(to);
-    s_append_string(to, from);
+    TODO();
 }
 
 void append_char(String *str, char c)
@@ -70,7 +70,7 @@ void s_append_string(String *str, const char *other)
 
     tmp.allocated_size = other_size;
     tmp.internal_pointer = (char*)malloc(other_size);
-    memcpy_s(tmp.internal_pointer, other_size, other, other_size);
+    memcpy(tmp.internal_pointer, other, other_size);
     tmp.size = other_size - 1;
 
     append_string(str, &tmp);
@@ -120,7 +120,7 @@ void append_string(String *str, String *other)
         reallocate_string(str, str->allocated_size + a * NEW_ALLOCATION_SIZE);
     }
     char* from = str->internal_pointer + str->size;
-    memcpy_s(from, str->allocated_size, other->internal_pointer, other->size);
+    memcpy(from, other->internal_pointer, other->size);
 
     str->size += other->size;
     str->internal_pointer[str->size] = 0;
@@ -138,7 +138,7 @@ void reallocate_string(String *str, size_t new_size)
     
     char* new = (char*)malloc(new_size);
 
-    memcpy_s(new, new_size, str->internal_pointer, str->size);
+    memcpy(new, str->internal_pointer, str->size);
 
     free(str->internal_pointer);
 
@@ -154,9 +154,25 @@ void insert_char(String **str, size_t position, char c)
 {
     String* new = str_new();
     append_until(new, *str, position);
-    append_char(*str, c);
-    s_append_string(new, (*str)->internal_pointer[position]);
+    append_char(new, c);
+    s_append_string(new, (*str)->internal_pointer + position);
 
     free_str(*str);
     *str = new; // Interchange the string so noone notices )
+}
+
+void s_insert_string(String **str, size_t position, const char *other)
+{
+    String* new = str_new();
+    append_until(new, *str, position);
+    s_append_string(new, other);
+    s_append_string(new, (*str)->internal_pointer + position);
+
+    free_str(*str);
+    *str = new; // Interchange the string so noone notices )
+}
+
+void insert_string(String **str, size_t position, String *other)
+{
+    s_insert_string(str, position, other->internal_pointer);
 }

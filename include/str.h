@@ -28,3 +28,5 @@ void reallocate_string(String* str, size_t new_size);
 void print_string(String* str);
 
 void insert_char(String** str, size_t position, char c);
+void s_insert_string(String** str, size_t position, const char* other);
+void insert_string(String** str, size_t position, String* other);
