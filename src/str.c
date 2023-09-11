@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 String *str_new()
 {
@@ -37,6 +38,21 @@ void free_str(String *str)
     free(str);
 }
 
+String *copy_str(String *from)
+{
+    String* result = str_new();
+
+    append_string(result, from); // that can be considered copy, right?
+
+    return result;
+}
+
+void copy_into(String *to, String *from)
+{
+    free_str(to);
+    s_append_string(to, from);
+}
+
 void append_char(String *str, char c)
 {
     if(str->size + 1 >= str->allocated_size) {
@@ -58,6 +74,43 @@ void s_append_string(String *str, const char *other)
     tmp.size = other_size - 1;
 
     append_string(str, &tmp);
+}
+
+void s_append_until(String *str, const char *other, size_t size)
+{
+    size_t ln = strlen(other);
+
+    if(size > ln) return;
+    else if(size == ln) {
+        s_append_string(str, other);
+        return;
+    }
+
+    char* str_to_append = (char*)malloc(ln + 1); // +1 because null terminator
+    strcpy(str_to_append, other);
+    
+    str_to_append[size] = 0; // put the ending here
+
+    s_append_string(str, str_to_append);
+
+    free(str_to_append);
+}
+
+void append_until(String *str, String* other, size_t size) {
+    if(size > other->size) return;
+    else if(size == other->size) {
+        append_string(str, other);
+        return;
+    }
+
+    char* str_to_append = (char*)malloc(other->size + 1); // +1 because null terminator
+    strcpy(str_to_append, other->internal_pointer);
+    
+    str_to_append[size] = 0; // put the ending here
+
+    s_append_string(str, str_to_append);
+
+    free(str_to_append);
 }
 
 void append_string(String *str, String *other)
@@ -95,4 +148,15 @@ void reallocate_string(String *str, size_t new_size)
 
 void print_string(String* str) {
     printf("%s", str->internal_pointer);
+}
+
+void insert_char(String **str, size_t position, char c)
+{
+    String* new = str_new();
+    append_until(new, *str, position);
+    append_char(*str, c);
+    s_append_string(new, (*str)->internal_pointer[position]);
+
+    free_str(*str);
+    *str = new; // Interchange the string so noone notices )
 }
