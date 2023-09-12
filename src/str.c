@@ -131,6 +131,21 @@ void recalculate_size(String *str)
     str->size = strlen(str->internal_pointer);
 }
 
+void reallocate_string_by_size(String *str)
+{
+    size_t alloc_size = str->size / NEW_ALLOCATION_SIZE + 1;
+    if(alloc_size * NEW_ALLOCATION_SIZE < FIRST_ALLOCATION_SIZE)
+        alloc_size = FIRST_ALLOCATION_SIZE / NEW_ALLOCATION_SIZE;
+    char* new = (char*)malloc(alloc_size * NEW_ALLOCATION_SIZE);
+
+    memcpy(new, str->internal_pointer, str->size);
+
+    free(str->internal_pointer);
+
+    str->internal_pointer = new;
+    str->allocated_size = alloc_size * NEW_ALLOCATION_SIZE;
+}
+
 void reallocate_string(String *str, size_t new_size)
 {
     if(new_size < str->allocated_size)
@@ -175,4 +190,19 @@ void s_insert_string(String **str, size_t position, const char *other)
 void insert_string(String **str, size_t position, String *other)
 {
     s_insert_string(str, position, other->internal_pointer);
+}
+
+void trim_end_string(String *str)
+{
+    char c;
+    size_t offset = str->size;
+
+    while((c = str->internal_pointer[--offset]) || offset >= 0) {
+        if(c == ' ' || c == '\n' || c == '\t')
+            str->internal_pointer[offset] = 0;
+        else break;
+    }
+    str->size = offset + 1;
+
+    // TODO: Do i put reallocate by size here? or do i leave it to the user?
 }
