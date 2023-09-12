@@ -24,9 +24,12 @@ void s_append_until(String* str, const char* other, size_t size);
 void append_until(String* str, String* other, size_t size);
 void append_string(String* str, String* other);
 void recalculate_size(String* str);
+void reallocate_string_by_size(String* str);
 void reallocate_string(String* str, size_t new_size);
 void print_string(String* str);
 
 void insert_char(String** str, size_t position, char c);
 void s_insert_string(String** str, size_t position, const char* other);
 void insert_string(String** str, size_t position, String* other);
+
+void trim_end_string(String* str);

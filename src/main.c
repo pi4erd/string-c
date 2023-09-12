@@ -3,18 +3,13 @@
 #include "str.h"
 
 int main(int argc, char* argv[]) {
-    String* str = from_c_str("Hello, ");
-    String* other = from_c_str("World!");
+    String* str = from_c_str("Hello,,.afhpiushfioushefipdasfhiosdfdho        ");
 
-    for(int i = 0; i < 10; i++)
-        append_string(str, other);
+    for(int i = 0; i < 10000; i++)
+        append_char(str, ' ');
 
-    free_str(other);
-
-    for(int i = 0; i < 1000000; i++)
-        append_char(str, 'c');
-    
-    append_char(str, '\n');
+    trim_end_string(str);
+    reallocate_string_by_size(str);
 
     print_string(str);
 
