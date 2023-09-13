@@ -13,7 +13,23 @@ typedef struct _str_struct {
 
 String* str_new();
 String* from_c_str(const char* string);
-void free_str(String* str);
+void create_string(String* str);
+void create_string_from_str(String* str, const char* string);
+
+/**
+ * @brief Frees memory of a heap allocated string. For stack-allocated strings
+ * use `destroy_str`
+ * 
+ * @param str Pointer to a string pointer
+ */
+void free_str(String** str);
+/**
+ * @brief Frees memory of a stack allocated string. For heap-allocated strings
+ * use `free_str`
+ * 
+ * @param str Pointer to a string struct
+ */
+void destroy_str(String* str);
 
 String* copy_str(String* from);
 void copy_into(String* to, String* from);
@@ -23,10 +39,11 @@ void s_append_string(String* str, const char* other);
 void s_append_until(String* str, const char* other, size_t size);
 void append_until(String* str, String* other, size_t size);
 void append_string(String* str, String* other);
+void print_string(String* str);
+
 void recalculate_size(String* str);
 void reallocate_string_by_size(String* str);
 void reallocate_string(String* str, size_t new_size);
-void print_string(String* str);
 
 void insert_char(String** str, size_t position, char c);
 void s_insert_string(String** str, size_t position, const char* other);
