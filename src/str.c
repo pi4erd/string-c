@@ -33,10 +33,38 @@ String *from_c_str(const char *string)
     return result;
 }
 
-void free_str(String *str)
+void create_string(String *str)
+{
+    str->size = 0;
+    str->internal_pointer = (char*)malloc(FIRST_ALLOCATION_SIZE);
+    str->allocated_size = FIRST_ALLOCATION_SIZE;
+    str->internal_pointer[0] = 0;
+}
+
+void create_string_from_str(String *str, const char *string)
+{
+    size_t str_size = strlen(string);
+
+    str->allocated_size = FIRST_ALLOCATION_SIZE;
+    if(str_size + 1 > FIRST_ALLOCATION_SIZE) {
+        size_t a = (str_size + 1) / NEW_ALLOCATION_SIZE + 1;
+        str->allocated_size += a * NEW_ALLOCATION_SIZE;
+    }
+    str->internal_pointer = (char*)malloc(str->allocated_size);
+    memcpy(str->internal_pointer, string, str_size + 1);
+    str->size = str_size;
+}
+
+void free_str(String **str)
+{
+    free((*str)->internal_pointer);
+    free(*str);
+    *str = NULL;
+}
+
+void destroy_str(String *str)
 {
     free(str->internal_pointer);
-    free(str);
 }
 
 String *copy_str(String *from)
@@ -136,13 +164,8 @@ void reallocate_string_by_size(String *str)
     size_t alloc_size = str->size / NEW_ALLOCATION_SIZE + 1;
     if(alloc_size * NEW_ALLOCATION_SIZE < FIRST_ALLOCATION_SIZE)
         alloc_size = FIRST_ALLOCATION_SIZE / NEW_ALLOCATION_SIZE;
-    char* new = (char*)malloc(alloc_size * NEW_ALLOCATION_SIZE);
-
-    memcpy(new, str->internal_pointer, str->size);
-
-    free(str->internal_pointer);
-
-    str->internal_pointer = new;
+    
+    str->internal_pointer = (char*)realloc(str->internal_pointer, alloc_size * NEW_ALLOCATION_SIZE);
     str->allocated_size = alloc_size * NEW_ALLOCATION_SIZE;
 }
 
@@ -151,13 +174,8 @@ void reallocate_string(String *str, size_t new_size)
     if(new_size < str->allocated_size)
         new_size = str->allocated_size;
     
-    char* new = (char*)malloc(new_size);
-
-    memcpy(new, str->internal_pointer, str->size);
-
-    free(str->internal_pointer);
-
-    str->internal_pointer = new;
+    str->internal_pointer = (char*)realloc(str->internal_pointer, new_size);
+    
     str->allocated_size = new_size;
 }
 
@@ -172,7 +190,7 @@ void insert_char(String **str, size_t position, char c)
     append_char(new, c);
     s_append_string(new, (*str)->internal_pointer + position);
 
-    free_str(*str);
+    free_str(str);
     *str = new; // Interchange the string so noone notices )
 }
 
@@ -183,7 +201,7 @@ void s_insert_string(String **str, size_t position, const char *other)
     s_append_string(new, other);
     s_append_string(new, (*str)->internal_pointer + position);
 
-    free_str(*str);
+    free_str(str);
     *str = new; // Interchange the string so noone notices )
 }
 
@@ -204,5 +222,5 @@ void trim_end_string(String *str)
     }
     str->size = offset + 1;
 
-    // TODO: Do i put reallocate by size here? or do i leave it to the user?
+    reallocate_string_by_size(str);
 }
