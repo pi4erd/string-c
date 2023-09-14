@@ -32,6 +32,12 @@ void free_str(String** str);
 void destroy_str(String* str);
 
 String* copy_str(String* from);
+/**
+ * @brief Copies a string into an allocated string struct
+ * 
+ * @param to String pointer to copy to
+ * @param from String pointer to copy from
+ */
 void copy_into(String* to, String* from);
 
 void append_char(String* str, char c);
