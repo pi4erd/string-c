@@ -78,7 +78,15 @@ String *copy_str(String *from)
 
 void copy_into(String *to, String *from)
 {
-    TODO();
+    if(to == NULL || from == NULL)
+        return;
+
+    // TODO: Add null check to every realloc!
+    to->internal_pointer = (char*)realloc(to->internal_pointer, from->allocated_size);
+    to->allocated_size = from->allocated_size;
+    to->size = from->size;
+
+    memcpy(to->internal_pointer, from->internal_pointer, from->allocated_size);
 }
 
 void append_char(String *str, char c)
@@ -165,6 +173,7 @@ void reallocate_string_by_size(String *str)
     if(alloc_size * NEW_ALLOCATION_SIZE < FIRST_ALLOCATION_SIZE)
         alloc_size = FIRST_ALLOCATION_SIZE / NEW_ALLOCATION_SIZE;
     
+    // TODO: Add null check to every realloc!
     str->internal_pointer = (char*)realloc(str->internal_pointer, alloc_size * NEW_ALLOCATION_SIZE);
     str->allocated_size = alloc_size * NEW_ALLOCATION_SIZE;
 }
@@ -174,6 +183,7 @@ void reallocate_string(String *str, size_t new_size)
     if(new_size < str->allocated_size)
         new_size = str->allocated_size;
     
+    // TODO: Add null check to every realloc!
     str->internal_pointer = (char*)realloc(str->internal_pointer, new_size);
     
     str->allocated_size = new_size;
@@ -183,6 +193,8 @@ void print_string(String* str) {
     printf("%s", str->internal_pointer);
 }
 
+// FIXME: Optimize function so that it doesn't create a new string and destroy a
+// previous one every time.
 void insert_char(String **str, size_t position, char c)
 {
     String* new = str_new();
@@ -194,6 +206,8 @@ void insert_char(String **str, size_t position, char c)
     *str = new; // Interchange the string so noone notices )
 }
 
+// FIXME: Optimize function so that it doesn't create a new string and destroy a
+// previous one every time.
 void s_insert_string(String **str, size_t position, const char *other)
 {
     String* new = str_new();

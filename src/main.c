@@ -3,14 +3,13 @@
 #include "str.h"
 
 int main(int argc, char* argv[]) {
-    String stack_str;
-    create_string_from_str(&stack_str, "Hello, world!");
+    String* str1 = str_new();
+    String* str2 = from_c_str("this is a string\n");
 
-    s_append_string(&stack_str, " You are my friend!\n");
+    copy_into(str1, str2); // str2 -> str1
 
-    print_string(&stack_str);
-
-    destroy_str(&stack_str);
+    print_string(str1);
+    print_string(str2);
 
     return 0;
 }
