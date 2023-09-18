@@ -193,6 +193,11 @@ void print_string(String* str) {
     printf("%s", str->internal_pointer);
 }
 
+void create_with_format(String *str, const char *format, ...)
+{
+    TODO();
+}
+
 // FIXME: Optimize function so that it doesn't create a new string and destroy a
 // previous one every time.
 void insert_char(String **str, size_t position, char c)
