@@ -155,7 +155,7 @@ void reallocate_string(String* str, size_t new_size);
  * @param position Position to insert to
  * @param c A character to insert
  */
-void insert_char(String** str, size_t position, char c);
+void insert_char(String* str, size_t position, char c);
 /**
  * @brief Inserts a C-type string in position
  * 
@@ -163,7 +163,7 @@ void insert_char(String** str, size_t position, char c);
  * @param position Position to insert to
  * @param other A C-type string to insert
  */
-void s_insert_string(String** str, size_t position, const char* other);
+void s_insert_string(String* str, size_t position, const char* other);
 /**
  * @brief Inserts a string into another string in position
  * 
@@ -171,7 +171,7 @@ void s_insert_string(String** str, size_t position, const char* other);
  * @param position A position to insert to
  * @param other A string to insert
  */
-void insert_string(String** str, size_t position, String* other);
+void insert_string(String* str, size_t position, String* other);
 
 /**
  * @brief Trims an end of a string from whitespace characters. They are:

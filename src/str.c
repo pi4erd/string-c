@@ -198,35 +198,46 @@ void create_with_format(String *str, const char *format, ...)
     TODO();
 }
 
-// FIXME: Optimize function so that it doesn't create a new string and destroy a
-// previous one every time.
-void insert_char(String **str, size_t position, char c)
+void insert_char(String *str, size_t position, char c)
 {
-    String* new = str_new();
-    append_until(new, *str, position);
-    append_char(new, c);
-    s_append_string(new, (*str)->internal_pointer + position);
+    char* copy = (char*)malloc(str->size + 1);
+    strcpy(copy, str->internal_pointer);
 
-    free_str(str);
-    *str = new; // Interchange the string so noone notices )
+    str->internal_pointer[position] = 0;
+    recalculate_size(str);
+
+    append_char(str, c);
+    s_append_string(str, copy + position);
+
+    free(copy);
 }
 
-// FIXME: Optimize function so that it doesn't create a new string and destroy a
-// previous one every time.
-void s_insert_string(String **str, size_t position, const char *other)
+void s_insert_string(String *str, size_t position, const char *other)
 {
-    String* new = str_new();
-    append_until(new, *str, position);
-    s_append_string(new, other);
-    s_append_string(new, (*str)->internal_pointer + position);
+    char* copy = (char*)malloc(str->size + 1);
+    strcpy(copy, str->internal_pointer);
 
-    free_str(str);
-    *str = new; // Interchange the string so noone notices )
+    str->internal_pointer[position] = 0;
+    recalculate_size(str);
+
+    s_append_string(str, other);
+    s_append_string(str, copy + position);
+
+    free(copy);
 }
 
-void insert_string(String **str, size_t position, String *other)
+void insert_string(String *str, size_t position, String *other)
 {
-    s_insert_string(str, position, other->internal_pointer);
+    char* copy = (char*)malloc(str->size + 1);
+    strcpy(copy, str->internal_pointer);
+
+    str->internal_pointer[position] = 0;
+    recalculate_size(str);
+
+    append_string(str, other);
+    s_append_string(str, copy + position);
+
+    free(copy);
 }
 
 void trim_end_string(String *str)
