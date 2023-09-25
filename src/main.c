@@ -6,8 +6,7 @@ int main(int argc, char* argv[]) {
     String astring;
     create_string_from_str(&astring, "Hello, world!\n");
 
-    insert_char(&astring, 3, '#');
-    s_insert_string(&astring, 8, "(My GOD)");
+    remove_span(&astring, 4, 7);
 
     print_string(&astring);
 

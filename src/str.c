@@ -189,6 +189,43 @@ void reallocate_string(String *str, size_t new_size)
     str->allocated_size = new_size;
 }
 
+void remove_char_at(String *str, size_t position)
+{
+    if(position >= str->size) return;
+
+    char* copy = (char*)malloc(str->size);
+
+    strcpy(copy, str->internal_pointer);
+
+    str->internal_pointer[position] = 0;
+    recalculate_size(str);
+
+    s_append_string(str, copy + position + 1);
+
+    free(copy);
+}
+
+void remove_span(String *str, size_t from, size_t until)
+{
+    if(from >= str->size) return;
+
+    char* copy = (char*)malloc(str->size);
+
+    strcpy(copy, str->internal_pointer);
+
+    str->internal_pointer[from] = 0;
+    if(until >= str->size) {
+        recalculate_size(str);
+        reallocate_string_by_size(str);
+        return;
+    }
+    recalculate_size(str);
+
+    s_append_string(str, copy + until);
+
+    free(copy);
+}
+
 void print_string(String* str) {
     printf("%s", str->internal_pointer);
 }
@@ -238,6 +275,27 @@ void insert_string(String *str, size_t position, String *other)
     s_append_string(str, copy + position);
 
     free(copy);
+}
+
+int find_char(size_t *location, const String *str, char c)
+{
+    for(size_t i = 0; i < str->size; i++) {
+        if(str->internal_pointer[i] == c) {
+            *location = i;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void replace_char(String *str, char c, char new)
+{
+    size_t pos;
+
+    // TODO: Add error handling better than just to ignore it or exit
+    if(!find_char(&pos, str, c)) return;
+
+    TODO();
 }
 
 void trim_end_string(String *str)

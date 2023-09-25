@@ -148,6 +148,9 @@ void reallocate_string_by_size(String* str);
  */
 void reallocate_string(String* str, size_t new_size);
 
+void remove_char_at(String* str, size_t position);
+void remove_span(String* str, size_t from, size_t until);
+
 /**
  * @brief Inserts a character in position
  * 
@@ -172,6 +175,9 @@ void s_insert_string(String* str, size_t position, const char* other);
  * @param other A string to insert
  */
 void insert_string(String* str, size_t position, String* other);
+
+int find_char(size_t* location, const String* str, char c);
+void replace_char(String* str, char c, char new);
 
 /**
  * @brief Trims an end of a string from whitespace characters. They are:
