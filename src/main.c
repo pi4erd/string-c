@@ -3,13 +3,13 @@
 #include "str.h"
 
 int main(int argc, char* argv[]) {
-    String* str1 = str_new();
-    String* str2 = from_c_str("this is a string\n");
+    String astring;
+    create_string_from_str(&astring, "Hello, world!\n");
 
-    copy_into(str1, str2); // str2 -> str1
+    insert_char(&astring, 3, '#');
+    s_insert_string(&astring, 8, "(My GOD)");
 
-    print_string(str1);
-    print_string(str2);
+    print_string(&astring);
 
     return 0;
 }
