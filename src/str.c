@@ -295,7 +295,28 @@ void replace_char(String *str, char c, char new)
     // TODO: Add error handling better than just to ignore it or exit
     if(!find_char(&pos, str, c)) return;
 
-    TODO();
+    remove_char_at(str, pos);
+
+    insert_char(str, pos, new);
+}
+
+void replace_char_at(String *str, size_t position, char new)
+{
+    remove_char_at(str, position);
+
+    insert_char(str, position, new);
+}
+
+void s_replace_char_with_string(String *str, char c, char *new)
+{
+    size_t pos;
+
+    // TODO: Add error handling better than just to ignore it or exit
+    if(!find_char(&pos, str, c)) return;
+
+    remove_char_at(str, pos);
+
+    s_insert_string(str, pos, new);
 }
 
 void trim_end_string(String *str)

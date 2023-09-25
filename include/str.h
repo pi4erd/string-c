@@ -178,6 +178,8 @@ void insert_string(String* str, size_t position, String* other);
 
 int find_char(size_t* location, const String* str, char c);
 void replace_char(String* str, char c, char new);
+void replace_char_at(String* str, size_t position, char new);
+void s_replace_char_with_string(String* str, char c, char* new);
 
 /**
  * @brief Trims an end of a string from whitespace characters. They are:
