@@ -176,6 +176,8 @@ void s_insert_string(String* str, size_t position, const char* other);
  */
 void insert_string(String* str, size_t position, String* other);
 
+void reverse_str(String* str);
+
 int find_char(size_t* location, const String* str, char c);
 void replace_char(String* str, char c, char new);
 void replace_char_at(String* str, size_t position, char new);
@@ -190,3 +192,7 @@ void s_replace_char_with_string(String* str, char c, char* new);
  * @param str String to trim
  */
 void trim_end_string(String* str);
+
+#ifdef STR_H_IMPL
+    // TODO: Add implementation for header-only mode
+#endif

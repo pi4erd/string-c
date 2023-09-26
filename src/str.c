@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 #define TODO() (fprintf(stderr, "Not yet implemented\n"), exit(1))
 
@@ -230,9 +231,162 @@ void print_string(String* str) {
     printf("%s", str->internal_pointer);
 }
 
+String int_to_string(int num, int radix, bool lowercase) {
+    const char chars_upper[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const char chars_lower[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+    bool neg = num < 0;
+
+    String new;
+    create_string(&new);
+
+    if(neg) {
+        append_char(&new, '-');
+        num *= -1;
+    }
+
+    while(num > 0) {
+        int digit = num % radix;
+        num /= radix;
+
+        if(!lowercase)
+            append_char(&new, chars_upper[digit]);
+        else
+            append_char(&new, chars_lower[digit]);
+    }
+
+    reverse_str(&new); // FIXME: There should be a better way to do this
+
+    return new;
+}
+
+String uint_to_string(uint32_t num, uint32_t radix, bool lowercase) {
+    const char chars_upper[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const char chars_lower[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+    String new;
+    create_string(&new);
+
+    while(num > 0) {
+        uint32_t digit = num % radix;
+        num /= radix;
+
+        if(!lowercase)
+            append_char(&new, chars_upper[digit]);
+        else
+            append_char(&new, chars_lower[digit]);
+    }
+
+    reverse_str(&new); // FIXME: There should be a better way to do this
+
+    return new;
+}
+
 void create_with_format(String *str, const char *format, ...)
 {
-    TODO();
+    create_string(str);
+
+    va_list vl;
+    va_start(vl, format);
+
+    size_t fmt_len = strlen(format);
+
+    enum {
+        STATE_CHAR, STATE_FMT, STATE_PRN
+    };
+
+    int state = STATE_CHAR;
+
+    size_t i = 0;
+
+    while(i < fmt_len) {
+        char c = format[i];
+        switch (state)
+        {
+        case STATE_CHAR:
+            if(c == '%') {
+                state = STATE_FMT;
+                i++;
+                break;
+            }
+            append_char(str, c);
+            i++;
+            break;
+        case STATE_FMT:
+            switch(c) {
+                case '%':
+                    append_char(str, '%');
+                    break;
+                case 's':
+                    const char* strptr = va_arg(vl, char*);
+                    s_append_string(str, strptr);
+                    break;
+                case 'c':
+                    char c = va_arg(vl, int);
+                    append_char(str, c);
+                    break;
+                case 'd':
+                case 'i':
+                    int number = va_arg(vl, int);
+                    String numstr = int_to_string(number, 10, true);
+                    append_string(str, &numstr);
+                    destroy_str(&numstr);
+                    break;
+                case 'u':
+                    uint32_t nm = va_arg(vl, uint32_t);
+                    numstr = uint_to_string(nm, 10, true);
+                    append_string(str, &numstr);
+                    destroy_str(&numstr);
+                    break;
+                case 'x':
+                    uint64_t u64 = va_arg(vl, uint64_t);
+                    numstr = uint_to_string(u64, 16, true);
+                    append_string(str, &numstr);
+                    destroy_str(&numstr);
+                    break;
+                case 'p':
+                case 'X':
+                    u64 = va_arg(vl, uint64_t);
+                    numstr = uint_to_string(u64, 16, false);
+                    append_string(str, &numstr);
+                    destroy_str(&numstr);
+                    break;
+                case 'o':
+                    u64 = va_arg(vl, uint64_t);
+                    numstr = uint_to_string(u64, 8, false);
+                    append_string(str, &numstr);
+                    destroy_str(&numstr);
+                    break;
+                case 'f':
+                case 'F': // decimalfloating point
+                    TODO();
+                    break;
+                case 'e':
+                    TODO();
+                    break;
+                case 'E':
+                    TODO();
+                    break;
+                case 'g':
+                case 'G':
+                    TODO();
+                    break;
+                case 'n':
+                    number = va_arg(vl, int);
+                    break;
+                default:
+                    break;
+            }
+            i++;
+            state = STATE_CHAR;
+            break;
+        default:
+            break;
+        }
+        
+    }
+
+    va_end(vl);
 }
 
 void insert_char(String *str, size_t position, char c)
@@ -266,13 +420,25 @@ void s_insert_string(String *str, size_t position, const char *other)
 void insert_string(String *str, size_t position, String *other)
 {
     char* copy = (char*)malloc(str->size + 1);
-    strcpy(copy, str->internal_pointer);
+    strcpy(copy, str->internal_pointer); // FIXME: change to memcpy
 
     str->internal_pointer[position] = 0;
     recalculate_size(str);
 
     append_string(str, other);
     s_append_string(str, copy + position);
+
+    free(copy);
+}
+
+void reverse_str(String *str)
+{
+    char* copy = (char*)malloc(str->size + 1);
+    strcpy(copy, str->internal_pointer); // FIXME: change to memcpy
+
+    for(size_t i = 0; i < str->size; i++) {
+        str->internal_pointer[i] = copy[str->size - i - 1];
+    }
 
     free(copy);
 }
