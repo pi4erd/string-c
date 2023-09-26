@@ -4,9 +4,9 @@
 
 int main(int argc, char* argv[]) {
     String astring;
-    create_string_from_str(&astring, "Hello, world!\n");
+    create_string_from_str(&astring, "%d %d %d\n");
 
-    replace_char_at(&astring, 7, 'g');
+    replace_all_found_str(&astring, "%d", "booobooo");
 
     print_string(&astring);
 

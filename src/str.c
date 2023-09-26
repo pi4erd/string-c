@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-#define TODO() (fprintf(stderr, "Not yet implemented"), exit(1))
+#define TODO() (fprintf(stderr, "Not yet implemented\n"), exit(1))
 
 String *str_new()
 {
@@ -307,6 +307,73 @@ void replace_char_at(String *str, size_t position, char new)
     insert_char(str, position, new);
 }
 
+void replace_first_found_str(String *str, const char *str_to_replace, const char *new)
+{
+    size_t str_size = strlen(str_to_replace);
+
+    if(str_size == 0) return;
+
+    size_t pos = 0;
+    size_t offset = 0;
+    size_t i = 0;
+
+    while(i < str->size) {
+        if(offset >= str_size) {
+            break; // Exit because we found the string
+        }
+        if(str_to_replace[offset] == str->internal_pointer[i]) {
+            offset++;
+        } else {
+            pos++;
+            offset = 0;
+        }
+        i++;
+    }
+
+    if(offset == 0)
+        return;
+
+    remove_span(str, pos, pos + offset);
+    s_insert_string(str, pos, new);
+}
+
+void replace_all_found_str(String *str, const char *str_to_replace, const char *new)
+{
+    size_t str_size = strlen(str_to_replace);
+    size_t new_str_size = strlen(new);
+
+    if(str_size == 0) return;
+
+    size_t offset = 0;
+    size_t prev_iter_pos = 0;
+    do {
+        size_t pos = 0;
+        size_t i = prev_iter_pos;
+        offset = 0;
+
+        while(i < str->size) {
+            if(offset >= str_size) {
+                break; // Exit because we found the string
+            }
+            if(str_to_replace[offset] == str->internal_pointer[i]) {
+                offset++;
+            } else {
+                pos = i + 1;
+                offset = 0;
+            }
+            i++;
+        }
+
+        prev_iter_pos = pos + new_str_size - 1;
+
+        if(offset != 0) {
+            remove_span(str, pos, pos + offset);
+            s_insert_string(str, pos, new);
+            continue;
+        } else break;
+    } while(offset != 0); // just in case
+}
+
 void s_replace_char_with_string(String *str, char c, char *new)
 {
     size_t pos;
@@ -325,7 +392,7 @@ void trim_end_string(String *str)
     size_t offset = str->size;
 
     while((c = str->internal_pointer[--offset]) || offset >= 0) {
-        if(c == ' ' || c == '\n' || c == '\t')
+        if(c == ' ' || c == '\n' || c == '\t' || c == '\r')
             str->internal_pointer[offset] = 0;
         else break;
     }
