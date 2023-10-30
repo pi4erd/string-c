@@ -228,7 +228,7 @@ void remove_span(String *str, size_t from, size_t until)
 }
 
 void print_string(String* str) {
-    printf("%s", str->internal_pointer);
+    fwrite(str->internal_pointer, str->size, 1, stdout);
 }
 
 String int_to_string(int num, int radix, bool lowercase) {
@@ -241,7 +241,6 @@ String int_to_string(int num, int radix, bool lowercase) {
     create_string(&new);
 
     if(neg) {
-        append_char(&new, '-');
         num *= -1;
     }
 
@@ -255,6 +254,8 @@ String int_to_string(int num, int radix, bool lowercase) {
             append_char(&new, chars_lower[digit]);
     }
 
+    if(neg) append_char(&new, '-');
+    
     reverse_str(&new); // FIXME: There should be a better way to do this
 
     return new;
