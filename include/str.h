@@ -148,7 +148,20 @@ void reallocate_string_by_size(String* str);
  */
 void reallocate_string(String* str, size_t new_size);
 
+/**
+ * @brief Removes character at index and collapses string
+ * 
+ * @param str The string to change
+ * @param position Index of char to delete
+ */
 void remove_char_at(String* str, size_t position);
+/**
+ * @brief Removes span of characters from string
+ * 
+ * @param str String to change
+ * @param from Index to remove from, inclusive
+ * @param until Index to remove until, exclusive
+ */
 void remove_span(String* str, size_t from, size_t until);
 
 /**
@@ -176,8 +189,21 @@ void s_insert_string(String* str, size_t position, const char* other);
  */
 void insert_string(String* str, size_t position, String* other);
 
+/**
+ * @brief Reverses all characters in string
+ * 
+ * @param str String to reverse
+ */
 void reverse_str(String* str);
 
+/**
+ * @brief Finds char in string
+ * 
+ * @param location Location of char, pointer to return to
+ * @param str String to find char in
+ * @param c Char to find
+ * @return int 0 if not found, 1 if found
+ */
 int find_char(size_t* location, const String* str, char c);
 void replace_char(String* str, char c, char new);
 void replace_char_at(String* str, size_t position, char new);

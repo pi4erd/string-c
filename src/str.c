@@ -300,6 +300,10 @@ void create_with_format(String *str, const char *format, ...)
 
     size_t i = 0;
 
+    uint64_t u64;
+    uint32_t nm;
+    int number;
+
     while(i < fmt_len) {
         char c = format[i];
         switch (state)
@@ -328,19 +332,19 @@ void create_with_format(String *str, const char *format, ...)
                     break;
                 case 'd':
                 case 'i':
-                    int number = va_arg(vl, int);
+                    number = va_arg(vl, int);
                     String numstr = int_to_string(number, 10, true);
                     append_string(str, &numstr);
                     destroy_str(&numstr);
                     break;
                 case 'u':
-                    uint32_t nm = va_arg(vl, uint32_t);
+                    nm = va_arg(vl, uint32_t);
                     numstr = uint_to_string(nm, 10, true);
                     append_string(str, &numstr);
                     destroy_str(&numstr);
                     break;
                 case 'x':
-                    uint64_t u64 = va_arg(vl, uint64_t);
+                    u64 = va_arg(vl, uint64_t);
                     numstr = uint_to_string(u64, 16, true);
                     append_string(str, &numstr);
                     destroy_str(&numstr);
