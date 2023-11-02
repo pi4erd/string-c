@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #define TODO() (fprintf(stderr, "Not yet implemented\n"), exit(1))
 
