@@ -33,4 +33,3 @@ jobs:
       with:
         files: ${{github.workspace}}/build/*.tar.gz
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        release-tag: $CMAKE_PROJECT_VERSION
