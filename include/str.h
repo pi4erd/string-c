@@ -205,10 +205,47 @@ void reverse_str(String* str);
  * @return int 0 if not found, 1 if found
  */
 int find_char(size_t* location, const String* str, char c);
+/**
+ * @brief Replaces first found char with other char. If char not found, 
+ * doesn't do anything.
+ * 
+ * @param str String
+ * @param c Char to change
+ * @param new New char
+ */
 void replace_char(String* str, char c, char new);
+/**
+ * @brief Replaces char at position
+ * 
+ * @param str String
+ * @param position Position to change char at
+ * @param new New char
+ */
 void replace_char_at(String* str, size_t position, char new);
+/**
+ * @brief Replaces first occurrence of specific c-type string with other string.
+ * If nothing found, doesn't change anything
+ * 
+ * @param str String
+ * @param str_to_replace String to replace, gets found
+ * @param new New string in place of an old one
+ */
 void replace_first_found_str(String* str, const char* str_to_replace, const char* new);
+/**
+ * @brief Replaces all occurrences of a specific string
+ * 
+ * @param str String
+ * @param str_to_replace A string to replace (all occurrences)
+ * @param new New string in place of an old one
+ */
 void replace_all_found_str(String* str, const char* str_to_replace, const char* new);
+/**
+ * @brief Replaces char with string
+ * 
+ * @param str String
+ * @param c Char to replace
+ * @param new New string
+ */
 void s_replace_char_with_string(String* str, char c, char* new);
 
 /**
