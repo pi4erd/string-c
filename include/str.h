@@ -148,7 +148,20 @@ void reallocate_string_by_size(String* str);
  */
 void reallocate_string(String* str, size_t new_size);
 
+/**
+ * @brief Removes character at index and collapses string
+ * 
+ * @param str The string to change
+ * @param position Index of char to delete
+ */
 void remove_char_at(String* str, size_t position);
+/**
+ * @brief Removes span of characters from string
+ * 
+ * @param str String to change
+ * @param from Index to remove from, inclusive
+ * @param until Index to remove until, exclusive
+ */
 void remove_span(String* str, size_t from, size_t until);
 
 /**
@@ -176,13 +189,63 @@ void s_insert_string(String* str, size_t position, const char* other);
  */
 void insert_string(String* str, size_t position, String* other);
 
+/**
+ * @brief Reverses all characters in string
+ * 
+ * @param str String to reverse
+ */
 void reverse_str(String* str);
 
+/**
+ * @brief Finds char in string
+ * 
+ * @param location Location of char, pointer to return to
+ * @param str String to find char in
+ * @param c Char to find
+ * @return int 0 if not found, 1 if found
+ */
 int find_char(size_t* location, const String* str, char c);
+/**
+ * @brief Replaces first found char with other char. If char not found, 
+ * doesn't do anything.
+ * 
+ * @param str String
+ * @param c Char to change
+ * @param new New char
+ */
 void replace_char(String* str, char c, char new);
+/**
+ * @brief Replaces char at position
+ * 
+ * @param str String
+ * @param position Position to change char at
+ * @param new New char
+ */
 void replace_char_at(String* str, size_t position, char new);
+/**
+ * @brief Replaces first occurrence of specific c-type string with other string.
+ * If nothing found, doesn't change anything
+ * 
+ * @param str String
+ * @param str_to_replace String to replace, gets found
+ * @param new New string in place of an old one
+ */
 void replace_first_found_str(String* str, const char* str_to_replace, const char* new);
+/**
+ * @brief Replaces all occurrences of a specific string
+ * 
+ * @param str String
+ * @param str_to_replace A string to replace (all occurrences)
+ * @param new New string in place of an old one
+ */
 void replace_all_found_str(String* str, const char* str_to_replace, const char* new);
+/**
+ * @brief Replaces char with string
+ * 
+ * @param str String
+ * @param c Char to replace
+ * @param new New string
+ */
 void s_replace_char_with_string(String* str, char c, char* new);
 
 /**

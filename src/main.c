@@ -4,7 +4,9 @@
 
 int main(int argc, char* argv[]) {
     String str;
-    create_with_format(&str, "%d\n", -10509992);
+    create_with_format(&str, "Hello\n");
+
+    remove_span(&str, 3, 5);
 
     print_string(&str);
 
